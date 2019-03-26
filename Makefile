@@ -20,7 +20,7 @@
     deps:
 		$(GOGET) github.com/spf13/cobra
 		$(GOGET) github.com/spf13/viper
-    $(GOGET) github.com/owulveryck/toscalib
+		$(GOGET) github.com/owulveryck/toscalib
     
     
     # Cross compilation
