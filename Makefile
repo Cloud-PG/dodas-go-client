@@ -4,13 +4,14 @@
     GOCLEAN=$(GOCMD) clean
     GOTEST=$(GOCMD) test
     GOGET=$(GOCMD) get
-    BINARY_NAME=dodas_go_client
+    BINARY_NAME=dodas
     
     all: test build
     build: 
 		$(GOBUILD) -o $(BINARY_NAME) -v
-    test: 
+    test: build
 		$(GOTEST) -v ./...
+		./dodas --config ${HOME}/.dodas_go_client.yaml validate --template ${HOME}/git/TOSCA_BARI/_htcondor_.yml
     clean: 
 		$(GOCLEAN)
 		rm -f $(BINARY_NAME)
@@ -27,4 +28,4 @@
     build-linux:
 		CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
     docker-build:
-		docker run --rm -it -v "$(GOPATH)":/go -w /go/src/github.com/cloudpg/dodas_go_client golang:latest go build -o "$(BINARY_NAME)" -v
+		docker run --rm -it -v "$(GOPATH)":/go -w /go/src/github.com/cloudpg/dodas-go-client golang:latest go build -o "$(BINARY_NAME)" -v

@@ -23,6 +23,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Validate TOSCA template
+func Validate() {
+	fmt.Println("validate called")
+	var t toscalib.ServiceTemplateDefinition
+	template, err := ioutil.ReadFile(templateFile)
+	if err != nil {
+		panic(err)
+	}
+
+	err = t.Parse(bytes.NewBuffer(template))
+	if err != nil {
+		panic(err)
+	}
+	// t.TopologyTemplate.NodeTemplates
+	fmt.Print("Template OK\n")
+}
+
 // validateCmd represents the validate command
 var validateCmd = &cobra.Command{
 	Use:   "validate",
@@ -34,17 +51,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("validate called")
-		var t toscalib.ServiceTemplateDefinition
-		template, err := ioutil.ReadFile(templateFile)
-		if err != nil {
-			panic(err)
-		}
-
-		err = t.Parse(bytes.NewBuffer(template))
-		if err != nil {
-			panic(err)
-		}
+		Validate()
 	},
 }
 

@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/cloudpg/dodas_go_client/cmd"
+import "github.com/cloudpg/dodas-go-client/cmd"
 
 func main() {
 	cmd.Execute()
