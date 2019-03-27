@@ -6,10 +6,10 @@
     GOGET=$(GOCMD) get
     BINARY_NAME=dodas
     
-    all: test build
+    all: deps test
     build: 
 		$(GOBUILD) -o $(BINARY_NAME) -v
-    test: build
+    test: deps build
 		$(GOTEST) -v ./...
 		./dodas --config ${HOME}/.dodas_go_client.yaml validate --template ${HOME}/git/TOSCA_BARI/_htcondor_.yml
     clean: 
@@ -21,11 +21,7 @@
     deps:
 		$(GOGET) github.com/spf13/cobra
 		$(GOGET) github.com/spf13/viper
-		$(GOGET) github.com/owulveryck/toscalib
+		$(GOGET) github.com/dciangot/toscalib
     
-    
-    # Cross compilation
-    build-linux:
-		CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
     docker-build:
 		docker run --rm -it -v "$(GOPATH)":/go -w /go/src/github.com/cloudpg/dodas-go-client golang:latest go build -o "$(BINARY_NAME)" -v

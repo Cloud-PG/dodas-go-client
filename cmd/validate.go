@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/owulveryck/toscalib"
+	"github.com/dciangot/toscalib"
 	"github.com/spf13/cobra"
 )
 
