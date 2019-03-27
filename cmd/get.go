@@ -15,52 +15,32 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
 
-	"github.com/dciangot/toscalib"
 	"github.com/spf13/cobra"
 )
 
-// Validate TOSCA template
-func Validate() {
-	fmt.Println("validate called")
-	var t toscalib.ServiceTemplateDefinition
-	template, err := ioutil.ReadFile(templateFile)
-	if err != nil {
-		panic(err)
-	}
-
-	err = t.Parse(bytes.NewBuffer(template))
-	if err != nil {
-		panic(err)
-	}
-	// t.TopologyTemplate.NodeTemplates
-	fmt.Print("Template OK\n")
-}
-
-// validateCmd represents the validate command
-var validateCmd = &cobra.Command{
-	Use:   "validate",
-	Short: "Validate your tosca template",
-	Long: `Example:
-dodas validate --template my_tosca_template.yml`,
+// getCmd represents the get command
+var getCmd = &cobra.Command{
+	Use:   "get",
+	Short: "Wrapper command for get operations",
+	Long: `Wrapper command for get operations.
+dodas get -h for possible commands`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Validate()
+		fmt.Println("'dodas get -h' for possible commands")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(validateCmd)
+	rootCmd.AddCommand(getCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// validateCmd.PersistentFlags().String("foo", "", "A help for foo")
-	validateCmd.PersistentFlags().StringVar(&templateFile, "template", "", "Path to TOSCA template file")
+	// getCmd.PersistentFlags().String("foo", "", "A help for foo")
+
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// validateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// getCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -25,8 +25,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var verbose bool
-
 func sendRequest() {
 
 	fmt.Printf("Template: %v \n", string(templateFile))
@@ -73,13 +71,9 @@ func sendRequest() {
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Create a cluster from a TOSCA template",
+	Long: `
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		Validate()
 		sendRequest()
@@ -94,7 +88,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	createCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-
+	createCmd.PersistentFlags().StringVar(&templateFile, "template", "", "Path to TOSCA template file")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	//rootCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "verbose local command")
