@@ -22,7 +22,8 @@
 		$(GOGET) github.com/spf13/cobra
 		$(GOGET) github.com/spf13/viper
 		$(GOGET) github.com/dciangot/toscalib
-		$(GOGET) ./cmd/...
+		$(GOGET) github.com/cloudpg/dodas-go-client
+		$(GOGET) github.com/cloudpg/dodas-go-client/cmd
     
     docker-build:
 		docker run --rm -it -v "$(GOPATH)":/go -w /go/src/github.com/cloudpg/dodas-go-client golang:latest go build -o "$(BINARY_NAME)" -v
