@@ -2,5 +2,3 @@ language: go
 
 go:
   - master
-
-go_import_path: github.com/cloudpg/dodas-go-client/cmd
