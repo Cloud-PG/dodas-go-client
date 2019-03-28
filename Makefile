@@ -11,7 +11,7 @@
 		$(GOBUILD) -o $(BINARY_NAME) -v
     test: deps build
 		$(GOTEST) -v ./...
-		./dodas --config ${HOME}/.dodas_go_client.yaml validate --template ${HOME}/git/TOSCA_BARI/_htcondor_.yml
+		./dodas validate --template tests/valid_template.yml
     clean: 
 		$(GOCLEAN)
 		rm -f $(BINARY_NAME)
@@ -21,8 +21,9 @@
     deps:
 		$(GOGET) github.com/spf13/cobra
 		$(GOGET) github.com/spf13/viper
+		$(GOGET) github.com/mitchellh/go-homedir
+		$(GOGET) gopkg.in/yaml.v2
 		$(GOGET) github.com/dciangot/toscalib
-		$(GOGET) ./cmd/...
     
     docker-build:
-		docker run --rm -it -v "$(GOPATH)":/go -w /go/src/github.com/cloudpg/dodas-go-client golang:latest go build -o "$(BINARY_NAME)" -v
+		docker run --rm -it -v "$(GOPATH)":/go -w /go/src/github.com/Cloud-PG/dodas-go-client golang:latest go build -o "$(BINARY_NAME)" -v
