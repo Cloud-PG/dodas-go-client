@@ -37,6 +37,63 @@ func Validate() {
 		panic(err)
 	}
 	// t.TopologyTemplate.NodeTemplates
+
+	//t.TopologyTemplate.NodeTemplates["Type"]
+
+	//typeList := make(map[string][]string)
+
+	inputs := make(map[string][]string)
+	templs := make(map[string][]string)
+
+	for name := range t.TopologyTemplate.NodeTemplates {
+		//fmt.Println(name)
+
+		for templ := range t.TopologyTemplate.NodeTemplates[name].Properties {
+			if t.TopologyTemplate.NodeTemplates[name].Properties[templ].Value != "" && t.TopologyTemplate.NodeTemplates[name].Properties[templ].Value != nil {
+				//fmt.Println(t.TopologyTemplate.NodeTemplates[name].Properties[templ].Value)
+				templs[name] = append(templs[name], templ)
+			}
+			//fmt.Println(templ)
+		}
+
+		//fmt.Print("-----\n")
+		derived := t.NodeTypes[t.TopologyTemplate.NodeTemplates[name].Type].DerivedFrom
+		for derived != "" {
+			for interf := range t.NodeTypes[derived].Properties {
+				//fmt.Println(interf)
+				inputs[name] = append(inputs[name], interf)
+			}
+			//fmt.Println(derived)
+			derived = t.NodeTypes[derived].DerivedFrom
+		}
+
+		for interf := range t.NodeTypes[t.TopologyTemplate.NodeTemplates[name].Type].Properties {
+			inputs[name] = append(inputs[name], interf)
+		}
+
+	}
+	//fmt.Println(inputs)
+	//fmt.Println(templs)
+
+	for node := range templs {
+		//fmt.Println(node)
+		for nodeParam := range templs[node] {
+			isPresent := false
+			for param := range inputs[node] {
+				if inputs[node][param] == templs[node][nodeParam] {
+					isPresent = true
+				}
+			}
+			//fmt.Printf("%v %v\n", templs[node][nodeParam], isPresent)
+			if !isPresent {
+				fmt.Printf("%v not defined in type %v \n", templs[node][nodeParam], t.TopologyTemplate.NodeTemplates[node].Type)
+				fmt.Printf("ERROR: Invalid template for %v", node)
+				return
+			}
+		}
+		//fmt.Print("-----\n")
+	}
+
 	fmt.Print("Template OK\n")
 }
 
