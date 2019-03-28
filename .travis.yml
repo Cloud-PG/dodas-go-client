@@ -3,5 +3,5 @@ language: go
 go:
   - master
 
-services:
-  - docker
+#services:
+#  - docker

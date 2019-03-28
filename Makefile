@@ -6,8 +6,8 @@
     GOGET=$(GOCMD) get
     BINARY_NAME=dodas
     
-    all: deps docker-build 
-    build: 
+    all: deps build
+    build:
 		$(GOBUILD) -o $(BINARY_NAME) -v
     test: deps build
 		$(GOTEST) -v ./...
@@ -22,6 +22,7 @@
 		$(GOGET) github.com/spf13/cobra
 		$(GOGET) github.com/spf13/viper
 		$(GOGET) github.com/dciangot/toscalib
+		$(GOGET) ./cmd/...
     
     docker-build:
 		docker run --rm -it -v "$(GOPATH)":/go -w /go/src/github.com/cloudpg/dodas-go-client golang:latest go build -o "$(BINARY_NAME)" -v
