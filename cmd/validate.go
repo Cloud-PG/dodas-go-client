@@ -49,14 +49,16 @@ func Validate() {
 		//fmt.Println(name)
 
 		for templ := range t.TopologyTemplate.NodeTemplates[name].Properties {
-			if t.TopologyTemplate.NodeTemplates[name].Properties[templ].Value != "" && t.TopologyTemplate.NodeTemplates[name].Properties[templ].Value != nil {
-				//fmt.Println(t.TopologyTemplate.NodeTemplates[name].Properties[templ].Value)
+			//fmt.Println(templ)
+			value := t.TopologyTemplate.NodeTemplates[name].Properties[templ].Value
+			ft := t.TopologyTemplate.NodeTemplates[name].Properties[templ].Function
+			if value != "" && value != nil || ft != "" {
 				templs[name] = append(templs[name], templ)
 			}
-			//fmt.Println(templ)
+			//fmt.Print("-----\n")
 		}
 
-		//fmt.Print("-----\n")
+		//fmt.Print("++++\n")
 		derived := t.NodeTypes[t.TopologyTemplate.NodeTemplates[name].Type].DerivedFrom
 		for derived != "" {
 			for interf := range t.NodeTypes[derived].Properties {
@@ -80,6 +82,7 @@ func Validate() {
 		for nodeParam := range templs[node] {
 			isPresent := false
 			for param := range inputs[node] {
+
 				if inputs[node][param] == templs[node][nodeParam] {
 					isPresent = true
 				}
