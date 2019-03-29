@@ -6,7 +6,7 @@
     GOGET=$(GOCMD) get
     BINARY_NAME=dodas
     
-    all: deps build
+    all: deps build test
 
     build:
 		$(GOBUILD) -o $(BINARY_NAME) -v
