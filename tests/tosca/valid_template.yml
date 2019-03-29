@@ -1,0 +1,208 @@
+tosca_definitions_version: tosca_simple_yaml_1_0
+
+imports:
+  - indigo_custom_types: https://raw.githubusercontent.com/Cloud-PG/dodas-go-client/tests/tosca/valid_template.yaml
+
+description: TOSCA template for a complete CMS Site over Mesos orchestrator
+
+topology_template:
+
+  inputs:
+
+    number_of_masters:
+      type: integer
+      default: 1
+
+    num_cpus_master:
+      type: integer
+      default: 2
+
+    mem_size_master:
+      type: string
+      default: "4 GB"
+
+    number_of_slaves:
+      type: integer
+      default: 2
+
+    num_cpus_slave:
+      type: integer
+      default: 4
+
+    mem_size_slave:
+      type: string
+      default: "8 GB"
+
+    server_image:
+      type: string
+      #default: "ost://cloud.recas.ba.infn.it/8f667fbc-40bf-45b8-b22d-40f05b48d060"
+      default: "ost://openstack.fisica.unipg.it/43053c7c-ea87-485e-863a-f6140f8b1147"
+      #default: "ost://horizon.cloud.cnaf.infn.it/3d993ab8-5d7b-4362-8fd6-af1391edca39"
+
+    cms_wn_image:
+      type: string
+      default: "dodasts/cms"
+
+    cms_proxycache_image:
+      type: string
+      default: "dodasts/ttscache"
+
+    iam_token:
+      type: string
+      default: "token"
+
+    iam_client_id:
+      type: string
+      default: "string"
+
+    iam_client_secret:
+      type: string
+      default: "string"
+
+    cms_local_site:
+      type: string
+      default: "T3_IT_Opportunistic_xcache"
+
+    cms_stageoutsite:
+      type: string
+      default: "T1_IT_CNAF_Disk"
+
+    cms_stageoutserver:
+      type: string
+      default: "string"
+
+    cms_stageoutprotocol:
+      type: string
+      default: "srmv2"
+
+    cms_stageoutcommand:
+      type: string
+      default: "gfal2"
+
+    cms_phedexnode:
+      type: string
+      default: "T1_IT_CNAF_Disk"
+
+    cms_xrd_readserver:
+      type: string
+      default: "string"
+
+    monitordb_ip:
+      type: string
+      default: "9.8.8.8"
+
+    elasticsearch_secret:
+      type: string
+      default: "secret"
+
+    cms_proxycache_token_manager:
+      type: string
+      default: "LOCAL"
+
+    watts_endpoint:
+      type: string
+      default: "string"
+
+    iam_endpoint:
+      type: string
+      default: "string"
+
+    iam_credential_endpoint:
+      type: string
+      default: "string"
+
+    audience:
+      type: string
+      default: "string"
+
+
+
+  node_templates:
+
+    k8s_master:
+      type: tosca.nodes.indigo.LRMS.FrontEnd.Kubernetes
+      properties:
+        admin_token: testme
+      requirements:
+        - host: k8s-master-server
+
+    k8s_slave:
+      type: tosca.nodes.indigo.LRMS.WorkerNode.Kubernetes
+      properties:
+        front_end_ip: { get_attribute: [ k8s-master-server, public_address, 0 ] }
+      requirements:
+        - host: k8s-slave-server
+
+    cms_wn:
+      type: tosca.nodes.indigo.CmsWnConfig
+      properties:
+        cms_orchestrator: "k8s"
+        mysquid_host: { get_attribute: [ k8s-master-server, private_address, 0 ] }
+        proxycache_host: { get_attribute: [ k8s-master-server, private_address, 0 ] }
+        cms_local_site: { get_input: cms_local_site }
+        cms_stageoutsite: { get_input: cms_stageoutsite }
+        cms_stageoutprotocol: { get_input: cms_stageoutprotocol }
+        cms_stageoutcommand: { get_input: cms_stageoutcommand }
+        cms_phedexnode: { get_input: cms_phedexnode }
+        cms_xrd_readserver: { get_input: cms_xrd_readserver }
+        monitordb_ip: { get_input: monitordb_ip }
+        elasticsearch_secret: { get_input: elasticsearch_secret }
+      requirements:
+        - host: k8s_slave
+
+    cms_services:
+      type: tosca.nodes.indigo.CmsServices
+      properties:
+        cms_orchestrator: "k8s"
+        master_ips: ["dummy"]
+        mysquid_host: { get_attribute: [ k8s-master-server, private_address, 0 ] }
+        proxycache_host: { get_attribute: [ k8s-master-server, private_address, 0 ] }
+        iam_access_token: { get_input: iam_token }
+        iam_client_id: { get_input: iam_client_id }
+        iam_client_secret: { get_input: iam_client_secret }
+        cms_local_site: { get_input: cms_local_site }
+      requirements:
+        - host: k8s_master
+
+    k8s-master-server:
+      type: tosca.nodes.indigo.Compute
+      capabilities:
+        endpoint:
+          properties:
+            network_name: PUBLIC
+            ports:
+              kube_port:
+                protocol: tcp
+                source: 30443
+              kube_nfs:
+                protocol: tcp
+                source: 2049
+        scalable:
+          properties:
+            count: { get_input: number_of_masters }
+        host:
+          properties:
+            instance_type:  m1.medium
+        os:
+          properties:
+            image: { get_input: server_image }
+
+    k8s-slave-server:
+      type: tosca.nodes.indigo.Compute
+      capabilities:
+        endpoint:
+          properties:
+            network_name: hush-net
+        scalable:
+          properties:
+            count: { get_input: number_of_slaves }
+        host:
+          properties:
+            instance_type:  m1.medium
+        os:
+          properties:
+            image: { get_input: server_image }
+
+  outputs:
+    k8s_endpoint:
+      value: { concat: [ 'https://', get_attribute: [ k8s-master-server, public_address, 0 ], ':30443' ] }

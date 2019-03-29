@@ -7,17 +7,27 @@
     BINARY_NAME=dodas
     
     all: deps build
+
     build:
 		$(GOBUILD) -o $(BINARY_NAME) -v
+
     test: deps build
 		$(GOTEST) -v ./...
-		./dodas validate --template tests/valid_template.yml
+		echo "Valid template test"
+		./dodas validate --template tests/tosca/valid_template.yml
+		echo "Broken type test"
+		./dodas validate --template tests/tosca/broken_template_type.yml
+		echo "Broken inputs in template test"
+		./dodas validate --template tests/tosca/broken_template_node.yml
+
     clean: 
 		$(GOCLEAN)
 		rm -f $(BINARY_NAME)
+
     run:
 		$(GOBUILD) -o $(BINARY_NAME) -v ./...
 		./$(BINARY_NAME)
+
     deps:
 		$(GOGET) github.com/spf13/cobra
 		$(GOGET) github.com/spf13/viper
