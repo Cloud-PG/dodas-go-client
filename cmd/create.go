@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 
@@ -43,8 +44,38 @@ func sendRequest() {
 
 	req.Header.Set("Content-Type", "text/yaml")
 
-	// TODO: chain of string and get from config
-	req.Header.Set("Authorization", "id = os; type = OpenStack; host = ; username = ; tenant = DODAS; password = ; service_region = recas-cloud;\\nid = im; type = InfrastructureManager; username = ; password = ")
+	var authHeaderCloudList []string
+
+	fields := reflect.TypeOf(clientConf.Cloud)
+	values := reflect.ValueOf(clientConf.Cloud)
+
+	for i := 0; i < fields.NumField(); i++ {
+		field := fields.Field(i)
+		value := values.Field(i)
+
+		keyTemp := fmt.Sprintf("%v = %v", field.Name, value)
+		authHeaderCloudList = append(authHeaderCloudList, keyTemp)
+	}
+
+	authHeaderCloud := strings.Join(authHeaderCloudList, ";")
+
+	var authHeaderIMList []string
+
+	fields = reflect.TypeOf(clientConf.Im)
+	values = reflect.ValueOf(clientConf.Im)
+
+	for i := 0; i < fields.NumField(); i++ {
+		field := fields.Field(i)
+		value := values.Field(i)
+		keyTemp := fmt.Sprintf("%v = %v", field.Name, value.Interface())
+		authHeaderIMList = append(authHeaderIMList, keyTemp)
+	}
+
+	authHeaderIM := strings.Join(authHeaderIMList, ";")
+
+	authHeader := authHeaderCloud + "\n" + authHeaderIM
+
+	req.Header.Set("Authorization", authHeader)
 
 	var request []string
 	for name, headers := range req.Header {

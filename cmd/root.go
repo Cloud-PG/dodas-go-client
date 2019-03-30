@@ -30,29 +30,30 @@ var cfgFile string
 var templateFile string
 var infID string
 
-// type confCloud struct {
-// 	ID            string `yaml:"id"`
-// 	Type          string `yaml:"type"`
-// 	Username      string `yaml:"username"`
-// 	Password      string `yaml:"password"`
-// 	Host          string `yaml:"host"`
-// 	Tenant        string `yaml:"tenant"`
-// 	AuthVersion   string `yaml:"auth_version"`
-// 	Domain        string `yaml:"domain"`
-// 	ServiceRegion string `yaml:"service_region"`
-// }
+type confCloud struct {
+	ID            string `yaml:"id"`
+	Type          string `yaml:"type"`
+	Username      string `yaml:"username"`
+	Password      string `yaml:"password"`
+	Host          string `yaml:"host"`
+	Tenant        string `yaml:"tenant"`
+	AuthVersion   string `yaml:"auth_version"`
+	Domain        string `yaml:"domain"`
+	ServiceRegion string `yaml:"service_region"`
+}
 
 type confIM struct {
-	//ID       string `yaml:"im.id"`
-	//Type     string `yaml:"type"`
-	Host string `yaml:"host"`
-	//Username string `yaml:"username"`
-	//Password string `yaml:"password"`
-	//Token    string `yaml:"token"`
+	ID       string `yaml:"im.id"`
+	Type     string `yaml:"type"`
+	Host     string `yaml:"host"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Token    string `yaml:"token"`
 }
 
 type conf struct {
-	Im confIM `yaml:"im"`
+	Im    confIM    `yaml:"im"`
+	Cloud confCloud `yaml:"cloud"`
 }
 
 var clientConf conf
