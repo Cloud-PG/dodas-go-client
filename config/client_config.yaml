@@ -1,0 +1,16 @@
+cloud:
+    id: os
+    type: OpenStack
+    host: my_cloud_endpoint
+    # e.g. host: http://openstack.fisica.unipg.it:5000/ 
+    username: my_username
+    password: password_template
+    tenant: my_os_tenant
+    auth_version: 3.x_password
+    domain: default
+im:
+    id: im
+    type: InfrastructureManager
+    host: http://im.cloud.cnaf.infn.it:8800/infrastructures
+    token: token_template 
+
