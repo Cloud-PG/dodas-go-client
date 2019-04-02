@@ -5,7 +5,7 @@
 
 ## Quick start
 
-Or simply download the binary from the latest release on [github](https://github.com/Cloud-PG/dodas-go-client/releases). For instance:
+Download the binary from the latest release on [github](https://github.com/Cloud-PG/dodas-go-client/releases). For instance:
 
 ```bash
 wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.1.1/dodas.zip
