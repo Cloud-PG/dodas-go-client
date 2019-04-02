@@ -34,7 +34,8 @@ func Validate() {
 
 	err = t.Parse(bytes.NewBuffer(template))
 	if err != nil {
-		panic(err)
+		fmt.Printf("ERROR: Invalid template for %v", err)
+		return
 	}
 	// t.TopologyTemplate.NodeTemplates
 
