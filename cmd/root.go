@@ -43,7 +43,7 @@ type confCloud struct {
 }
 
 type confIM struct {
-	ID       string `yaml:"im.id"`
+	ID       string `yaml:"id"`
 	Type     string `yaml:"type"`
 	Host     string `yaml:"host"`
 	Username string `yaml:"username"`

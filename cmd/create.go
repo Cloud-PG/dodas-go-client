@@ -26,6 +26,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var decodeFields = map[string]string{
+	"ID":            "id",
+	"Type":          "type",
+	"Username":      "username",
+	"Password":      "password",
+	"Token":         "token",
+	"Host":          "host",
+	"Tenant":        "tenant",
+	"AuthVersion":   "auth_version",
+	"Domain":        "domain",
+	"ServiceRegion": "service_region",
+}
+
 func sendRequest() {
 
 	fmt.Printf("Template: %v \n", string(templateFile))
@@ -53,7 +66,7 @@ func sendRequest() {
 		field := fields.Field(i)
 		value := values.Field(i)
 
-		keyTemp := fmt.Sprintf("%v = %v", field.Name, value)
+		keyTemp := fmt.Sprintf("%v = %v", decodeFields[field.Name], value)
 		authHeaderCloudList = append(authHeaderCloudList, keyTemp)
 	}
 
@@ -67,13 +80,13 @@ func sendRequest() {
 	for i := 0; i < fields.NumField(); i++ {
 		field := fields.Field(i)
 		value := values.Field(i)
-		keyTemp := fmt.Sprintf("%v = %v", field.Name, value.Interface())
+		keyTemp := fmt.Sprintf("%v = %v", decodeFields[field.Name], value.Interface())
 		authHeaderIMList = append(authHeaderIMList, keyTemp)
 	}
 
 	authHeaderIM := strings.Join(authHeaderIMList, ";")
 
-	authHeader := authHeaderCloud + "\n" + authHeaderIM
+	authHeader := authHeaderCloud + "\\n" + authHeaderIM
 
 	req.Header.Set("Authorization", authHeader)
 
@@ -95,7 +108,10 @@ func sendRequest() {
 	//fmt.Println(resp)
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+
+	stringSplit := strings.Split(string(body), "/")
+
+	fmt.Println("InfrastructureID: ", stringSplit[len(stringSplit)-1])
 
 }
 
