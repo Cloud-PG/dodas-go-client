@@ -24,18 +24,18 @@ import (
 )
 
 // Validate TOSCA template
-func Validate() {
+func Validate() error {
 	fmt.Println("validate called")
 	var t toscalib.ServiceTemplateDefinition
 	template, err := ioutil.ReadFile(templateFile)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	err = t.Parse(bytes.NewBuffer(template))
 	if err != nil {
 		fmt.Printf("ERROR: Invalid template for %v", err)
-		return
+		return err
 	}
 	// t.TopologyTemplate.NodeTemplates
 
@@ -91,14 +91,14 @@ func Validate() {
 			//fmt.Printf("%v %v\n", templs[node][nodeParam], isPresent)
 			if !isPresent {
 				fmt.Printf("%v not defined in type %v \n", templs[node][nodeParam], t.TopologyTemplate.NodeTemplates[node].Type)
-				fmt.Printf("ERROR: Invalid template for %v", node)
-				return
+				return fmt.Errorf("ERROR: Invalid template for %v", node)
 			}
 		}
 		//fmt.Print("-----\n")
 	}
 
 	fmt.Print("Template OK\n")
+	return nil
 }
 
 // validateCmd represents the validate command
@@ -108,7 +108,10 @@ var validateCmd = &cobra.Command{
 	Long: `Example:
 dodas validate --template my_tosca_template.yml`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Validate()
+		err := Validate()
+		if err != nil {
+			fmt.Println(err)
+		}
 	},
 }
 

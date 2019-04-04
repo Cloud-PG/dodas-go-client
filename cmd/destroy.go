@@ -16,22 +16,65 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
+func destroyInf() {
+
+	client := &http.Client{
+		Timeout: 300 * time.Second,
+	}
+	fmt.Println("Submitting request to  : ", clientConf.Im.Host)
+
+	req, err := http.NewRequest("DELETE", string(clientConf.Im.Host)+"/"+infID, nil)
+
+	authHeader := PrepareAuthHeaders()
+
+	req.Header.Set("Authorization", authHeader)
+
+	var request []string
+	for name, headers := range req.Header {
+		name = strings.ToLower(name)
+		for _, h := range headers {
+			request = append(request, fmt.Sprintf("%v: %v", name, h))
+		}
+	}
+
+	request = append(request, fmt.Sprint("\n"))
+	//fmt.Printf(strings.Join(request, "\n"))
+
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode == 200 {
+		fmt.Println("Removed infrastracture ID: ", infID)
+	} else {
+		fmt.Println("ERROR:\n", string(body))
+		return
+	}
+}
+
 // destroyCmd represents the destroy command
 var destroyCmd = &cobra.Command{
-	Use:   "destroy",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "destroy <infID1> ... <infIDN>",
+	Args:  cobra.MinimumNArgs(1),
+	Short: "Destroy infrastructure with this InfID",
+	Long: `
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("destroy called")
+		for _, inf := range args {
+			infID = inf
+			destroyInf()
+		}
 	},
 }
 
@@ -43,7 +86,6 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// destroyCmd.PersistentFlags().String("foo", "", "A help for foo")
-
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// destroyCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

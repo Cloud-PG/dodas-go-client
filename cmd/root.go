@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
+	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -25,10 +27,50 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var verbose bool
 var cfgFile string
 var templateFile string
 var infID string
+
+// PrepareAuthHeaders ..
+func PrepareAuthHeaders() string {
+
+	var authHeaderCloudList []string
+
+	fields := reflect.TypeOf(clientConf.Cloud)
+	values := reflect.ValueOf(clientConf.Cloud)
+
+	for i := 0; i < fields.NumField(); i++ {
+		field := fields.Field(i)
+		value := values.Field(i)
+
+		keyTemp := fmt.Sprintf("%v = %v", decodeFields[field.Name], value)
+		authHeaderCloudList = append(authHeaderCloudList, keyTemp)
+	}
+
+	authHeaderCloud := strings.Join(authHeaderCloudList, ";")
+
+	var authHeaderIMList []string
+
+	fields = reflect.TypeOf(clientConf.Im)
+	values = reflect.ValueOf(clientConf.Im)
+
+	for i := 0; i < fields.NumField(); i++ {
+		field := fields.Field(i)
+		if decodeFields[field.Name] != "host" {
+			value := values.Field(i)
+			if value.Interface() != "" {
+				keyTemp := fmt.Sprintf("%v = %v", decodeFields[field.Name], value.Interface())
+				authHeaderIMList = append(authHeaderIMList, keyTemp)
+			}
+		}
+	}
+
+	authHeaderIM := strings.Join(authHeaderIMList, ";")
+
+	authHeader := authHeaderCloud + "\\n" + authHeaderIM
+
+	return authHeader
+}
 
 type confCloud struct {
 	ID            string `yaml:"id"`

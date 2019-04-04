@@ -16,27 +16,189 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
 
+// GetVMs ..
+func GetVMs(infID string) ([]string, error) {
+	///fmt.Println(string(template))
+	client := &http.Client{
+		Timeout: 300 * time.Second,
+	}
+	fmt.Println("Submitting request to  : ", clientConf.Im.Host)
+
+	req, err := http.NewRequest("GET", string(clientConf.Im.Host)+"/"+infID, nil)
+
+	req.Header.Set("Content-Type", "application/json")
+
+	authHeader := PrepareAuthHeaders()
+
+	req.Header.Set("Authorization", authHeader)
+
+	var request []string
+	for name, headers := range req.Header {
+		name = strings.ToLower(name)
+		for _, h := range headers {
+			request = append(request, fmt.Sprintf("%v: %v", name, h))
+		}
+	}
+
+	request = append(request, fmt.Sprint("\n"))
+	//fmt.Printf(strings.Join(request, "\n"))
+
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode == 200 {
+		fmt.Println("Available Infrastructure VMs:\n", string(body))
+	} else {
+		return nil, fmt.Errorf(string(body))
+	}
+	return strings.Split(string(body), "\n"), nil
+}
+
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Wrapper function for list operations",
+	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("list called")
 	},
 }
 
+// infIDsCmd represents the infIDs command
+var infIDsCmd = &cobra.Command{
+	Use:   "infIDs",
+	Short: "List Infrastructure IDs owned by the current client",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("infIDs called")
+		///fmt.Println(string(template))
+		client := &http.Client{
+			Timeout: 300 * time.Second,
+		}
+		fmt.Println("Submitting request to  : ", clientConf.Im.Host)
+
+		req, err := http.NewRequest("GET", string(clientConf.Im.Host), nil)
+
+		req.Header.Set("Content-Type", "application/json")
+
+		authHeader := PrepareAuthHeaders()
+
+		req.Header.Set("Authorization", authHeader)
+
+		var request []string
+		for name, headers := range req.Header {
+			name = strings.ToLower(name)
+			for _, h := range headers {
+				request = append(request, fmt.Sprintf("%v: %v", name, h))
+			}
+		}
+
+		request = append(request, fmt.Sprint("\n"))
+		//fmt.Printf(strings.Join(request, "\n"))
+
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		stringList := strings.Split(string(body), "\n")
+
+		fmt.Print("Infrastructure IDs:\n")
+		for _, str := range stringList {
+			stringSplit := strings.Split(str, "/")
+
+			if resp.StatusCode == 200 {
+				fmt.Println(stringSplit[len(stringSplit)-1])
+			} else {
+				fmt.Println("ERROR:\n", string(body))
+				return
+			}
+		}
+	},
+}
+
+// infosCmd represents the infos command
+var infosCmd = &cobra.Command{
+	Use:   "vms-info <infID>",
+	Args:  cobra.MinimumNArgs(1),
+	Short: "List detailed information for all the machine of an infID",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("infos called")
+		listVMs, err := GetVMs(string(args[0]))
+		if err != nil {
+			panic(err)
+		}
+
+		for _, vm := range listVMs {
+			client := &http.Client{
+				Timeout: 300 * time.Second,
+			}
+			fmt.Println("Submitting request to  : ", vm)
+
+			req, err := http.NewRequest("GET", vm, nil)
+
+			req.Header.Set("Content-Type", "application/json")
+
+			authHeader := PrepareAuthHeaders()
+
+			req.Header.Set("Authorization", authHeader)
+
+			var request []string
+			for name, headers := range req.Header {
+				name = strings.ToLower(name)
+				for _, h := range headers {
+					request = append(request, fmt.Sprintf("%v: %v", name, h))
+				}
+			}
+
+			request = append(request, fmt.Sprint("\n"))
+
+			resp, err := client.Do(req)
+			if err != nil {
+				panic(err)
+			}
+
+			body, _ := ioutil.ReadAll(resp.Body)
+			fmt.Println(string(body))
+		}
+
+	},
+}
+
+// vmsCmd represents the vms command
+var vmsCmd = &cobra.Command{
+	Use:   "vms <infID>",
+	Args:  cobra.MinimumNArgs(1),
+	Short: "List all the machine of an infID",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("vms called")
+		GetVMs(string(args[0]))
+
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(listCmd)
+
+	listCmd.AddCommand(infIDsCmd)
+	listCmd.AddCommand(infosCmd)
+	listCmd.AddCommand(vmsCmd)
 
 	// Here you will define your flags and configuration settings.
 

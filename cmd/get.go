@@ -16,6 +16,11 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -31,9 +36,182 @@ dodas get -h for possible commands`,
 	},
 }
 
+// statusCmd represents the status command
+var statusCmd = &cobra.Command{
+	Use:   "status <infID>",
+	Short: "Get deployment status",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("status called")
+
+		client := &http.Client{
+			Timeout: 300 * time.Second,
+		}
+		fmt.Println("Submitting request to  : ", clientConf.Im.Host)
+
+		req, err := http.NewRequest("GET", string(clientConf.Im.Host)+"/"+string(args[0])+"/contmsg", nil)
+
+		req.Header.Set("Content-Type", "application/json")
+
+		authHeader := PrepareAuthHeaders()
+
+		req.Header.Set("Authorization", authHeader)
+
+		var request []string
+		for name, headers := range req.Header {
+			name = strings.ToLower(name)
+			for _, h := range headers {
+				request = append(request, fmt.Sprintf("%v: %v", name, h))
+			}
+		}
+
+		request = append(request, fmt.Sprint("\n"))
+		//fmt.Printf(strings.Join(request, "\n"))
+
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		fmt.Print("Deployment status:\n")
+
+		if resp.StatusCode == 200 {
+			fmt.Println(string(body))
+		} else {
+			fmt.Println("ERROR:\n", string(body))
+			return
+		}
+
+	},
+}
+
+// vmstatusCmd represents the status command
+var vmstatusCmd = &cobra.Command{
+	Use:   "vm <infID> <vmID>",
+	Args:  cobra.MinimumNArgs(2),
+	Short: "Get VM deployment logs",
+	Long: `
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("vmstatus called")
+		listVMs, err := GetVMs(string(args[0]))
+		if err != nil {
+			panic(err)
+		}
+
+		vmN := string(args[1])
+		vmID, err := strconv.Atoi(vmN)
+		if err != nil {
+			panic(err)
+		}
+		vm := listVMs[vmID]
+
+		clientHTTP := &http.Client{
+			Timeout: 300 * time.Second,
+		}
+		fmt.Println("Submitting request to  : ", vm)
+
+		req, err := http.NewRequest("GET", vm+"/contmsg", nil)
+		if err != nil {
+			panic(err)
+		}
+
+		req.Header.Set("Content-Type", "application/json")
+
+		authHeader := PrepareAuthHeaders()
+
+		req.Header.Set("Authorization", authHeader)
+
+		var request []string
+		for name, headers := range req.Header {
+			name = strings.ToLower(name)
+			for _, h := range headers {
+				request = append(request, fmt.Sprintf("%v: %v", name, h))
+			}
+		}
+
+		request = append(request, fmt.Sprint("\n"))
+
+		resp, err := clientHTTP.Do(req)
+		if err != nil {
+			panic(err)
+		}
+
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		fmt.Printf("Deployment status for vm %v:\n", vmID)
+
+		if resp.StatusCode == 200 {
+			fmt.Println(string(body))
+		} else {
+			fmt.Println("ERROR:\n", string(body))
+			return
+		}
+
+	},
+}
+
+// vmCmd represents the vm command
+var vmCmd = &cobra.Command{
+	Use:   "vm <infID> <vmID>",
+	Args:  cobra.MinimumNArgs(2),
+	Short: "Get VM details",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("vm called")
+		listVMs, err := GetVMs(string(args[0]))
+		if err != nil {
+			panic(err)
+		}
+
+		vmN := string(args[1])
+		vmID, err := strconv.Atoi(vmN)
+		if err != nil {
+			panic(err)
+		}
+		vm := listVMs[vmID]
+		clientHTTP := &http.Client{
+			Timeout: 300 * time.Second,
+		}
+		fmt.Println("Submitting request to  : ", vm)
+
+		req, err := http.NewRequest("GET", vm, nil)
+
+		req.Header.Set("Content-Type", "application/json")
+
+		authHeader := PrepareAuthHeaders()
+
+		req.Header.Set("Authorization", authHeader)
+
+		var request []string
+		for name, headers := range req.Header {
+			name = strings.ToLower(name)
+			for _, h := range headers {
+				request = append(request, fmt.Sprintf("%v: %v", name, h))
+			}
+		}
+
+		request = append(request, fmt.Sprint("\n"))
+
+		resp, err := clientHTTP.Do(req)
+		if err != nil {
+			panic(err)
+		}
+
+		body, _ := ioutil.ReadAll(resp.Body)
+		fmt.Println(string(body))
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(getCmd)
 
+	getCmd.AddCommand(statusCmd)
+	statusCmd.AddCommand(vmstatusCmd)
+
+	getCmd.AddCommand(vmCmd)
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
