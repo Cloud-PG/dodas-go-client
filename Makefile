@@ -7,7 +7,8 @@ BINARY_NAME=dodas
 REPO=github.com/Cloud-PG/dodas-go-client
 
 export GO111MODULE=on
-export GOARCH=amd64  # Force 64 bit architecture
+# Force 64 bit architecture
+export GOARCH=amd64
 
 all: build test
 
