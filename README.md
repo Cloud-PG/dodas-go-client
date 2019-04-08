@@ -13,7 +13,7 @@ unzip dodas.zip
 cp dodas /usr/local/bin
 ```
 
-You can find now a template for creating your client configuration file in [config/client_config.yaml](https://github.com/Cloud-PG/dodas-go-client/config/client_config.yaml). Note that by default the client will look for `$HOME/.dodas.yaml`.
+You can find now a template for creating your client configuration file in [config/client_config.yaml](https://raw.githubusercontent.com/Cloud-PG/dodas-go-client/master/config/client_config.yaml). Note that by default the client will look for `$HOME/.dodas.yaml`.
 
 Now you are ready to go. For instance you can validate a tosca template like this:
 
