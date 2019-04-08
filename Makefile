@@ -7,6 +7,8 @@ BINARY_NAME=dodas
 REPO=github.com/Cloud-PG/dodas-go-client
 
 export GO111MODULE=on
+# Force 64 bit architecture
+export GOARCH=amd64
 
 all: build test
 
@@ -33,10 +35,10 @@ docker-build:
 	docker run --rm -it -v "$(GOPATH)":/go -w /go/src/$(REPO) golang:1.12.1 go build -o "$(BINARY_NAME)" -v
 
 windows-build:
-	env GOOS=windows GOARCH=386 $(GOBUILD) -o $(BINARY_NAME).exe -v
+	env GOOS=windows $(GOBUILD) -o $(BINARY_NAME).exe -v
 
 macos-build:
-	env GOOS=darwin GOARCH=386 $(GOBUILD) -o $(BINARY_NAME)_osx -v
+	env GOOS=darwin $(GOBUILD) -o $(BINARY_NAME)_osx -v
 
 build-release: build test windows-build macos-build
 	zip dodas.zip dodas
