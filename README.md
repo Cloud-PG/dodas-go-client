@@ -27,6 +27,28 @@ or you can create a cluster through the InfrastructureManager configured in your
 dodas create --config my_client_conf.yaml --template my_template.yaml
 ```
 
+To list the Infrastructure ID of all your deployments:
+
+```bash
+dodas list infIDs
+```
+
+## Using docker image
+
+In alternative you can create a docker image with the compiled client inside with:
+
+```bash
+make docker-img-build
+```
+
+and then you can bind the configuration files and run the previous commands as:
+
+```bash
+
+# list the Infrastructure ID of all your deployments
+docker run -v $HOME/.dodas.yaml:/app/.dodas.yaml --rm dodas list infIDs
+```
+
 ## Building from source
 
 To compile on a linux machine (go version that supports `go modules` is required for building from source: e.g. >= v1.12):

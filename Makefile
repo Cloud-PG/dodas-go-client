@@ -13,6 +13,9 @@ export GOARCH=amd64
 all: build test
 
 build:
+	$(GOBUILD) -o $(BINARY_NAME) -ldflags=-w -v
+
+build-debug:
 	$(GOBUILD) -o $(BINARY_NAME) -v
 
 test: build
@@ -31,8 +34,14 @@ run: build
 install:
 	$(GOCMD) install $(REPO)
 
-docker-build:
+tidy:
+	$(GOCMD) mod tidy
+
+docker-bin-build:
 	docker run --rm -it -v "$(GOPATH)":/go -w /go/src/$(REPO) golang:1.12.1 go build -o "$(BINARY_NAME)" -v
+
+docker-img-build:
+	docker build . -t dodas
 
 windows-build:
 	env GOOS=windows $(GOBUILD) -o $(BINARY_NAME).exe -v
@@ -40,7 +49,7 @@ windows-build:
 macos-build:
 	env GOOS=darwin $(GOBUILD) -o $(BINARY_NAME)_osx -v
 
-build-release: build test windows-build macos-build
+build-release: tidy build test windows-build macos-build docker-img-build
 	zip dodas.zip dodas
 	zip dodas.exe.zip dodas.exe
 	zip dodas_osx.zip dodas_osx
