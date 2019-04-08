@@ -24,6 +24,7 @@ build-debug:
 	$(GOBUILD_DBG) -o $(BINARY_NAME) -v
 
 doc:
+	cp README.md docs/README.md
 	BUILD_DOC=true ./$(BINARY_NAME)
 
 test: build
