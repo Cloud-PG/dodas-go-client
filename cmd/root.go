@@ -29,6 +29,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var version bool
 var cfgFile string
 var templateFile string
 var infID string
@@ -134,6 +135,14 @@ dodas create --template my_tosca_template.yml
 # VALIDATE TOSCA TEMPLATE
 dodas validate --template my_tosca_template.yml
 """`,
+
+	Run: func(cmd *cobra.Command, args []string) {
+		if version {
+			fmt.Println("dodas client version:", VersionString)
+		} else {
+			fmt.Println("Use 'dodas [command] --help' for more information about a command.")
+		}
+	},
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -167,7 +176,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "DODAS config file (default is $HOME/.dodas.yaml)")
-
+	rootCmd.Flags().BoolVarP(&version, "version", "v", false, "DODAS client version")
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

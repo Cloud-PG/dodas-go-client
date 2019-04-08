@@ -3,6 +3,8 @@
 
 [![Build Status](https://travis-ci.org/Cloud-PG/dodas-go-client.svg?branch=master)](https://travis-ci.org/Cloud-PG/dodas-go-client)
 
+[Reference Manual](https://cloud-pg.github.io/dodas-go-client/dodas)
+
 ## Quick start
 
 Download the binary from the latest release on [github](https://github.com/Cloud-PG/dodas-go-client/releases). For instance:
