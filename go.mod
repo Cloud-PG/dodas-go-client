@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
+	github.com/cpuguy83/go-md2man v1.0.10 // indirect
 	github.com/dciangot/toscalib v0.0.0-20190329085732-12f4d4a283e4
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kenjones-cisco/mergo v0.0.0-20161024152414-0149f50ea824 // indirect

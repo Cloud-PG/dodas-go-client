@@ -18,6 +18,9 @@ build:
 build-debug:
 	$(GOBUILD) -o $(BINARY_NAME) -v
 
+build-doc: build
+	BUILD_DOC=true ./$(BINARY_NAME)
+
 test: build
 	$(GOTEST) -v ./...
 	./$(BINARY_NAME) validate --template tests/tosca/valid_template.yml

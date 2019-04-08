@@ -17,12 +17,14 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"reflect"
 	"strings"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/cobra/doc"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 )
@@ -143,6 +145,14 @@ func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+}
+
+// BuildDoc ...
+func BuildDoc() {
+	err := doc.GenMarkdownTree(rootCmd, "docs")
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 

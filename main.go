@@ -14,8 +14,15 @@
 
 package main
 
-import "github.com/Cloud-PG/dodas-go-client/cmd"
+import (
+	"os"
+
+	"github.com/Cloud-PG/dodas-go-client/cmd"
+)
 
 func main() {
+	if _, ok := os.LookupEnv("BUILD_DOC"); ok {
+		cmd.BuildDoc()
+	}
 	cmd.Execute()
 }
