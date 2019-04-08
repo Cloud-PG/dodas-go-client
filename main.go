@@ -24,5 +24,5 @@ func main() {
 	if _, ok := os.LookupEnv("BUILD_DOC"); ok {
 		cmd.BuildDoc()
 	}
-	cmd.Execute()
+	cmd.Execute(VERSION)
 }

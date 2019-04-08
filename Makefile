@@ -1,5 +1,10 @@
+VERSION=`git describe --tags`
+BUILD_DATE := `date +%Y-%m-%d\ %H:%M`
+VERSIONFILE := version.go
+
 GOCMD=go
-GOBUILD=$(GOCMD) build
+GOBUILD=$(GOCMD) build -x -ldflags "-w -v"
+GOBUILD_DBG=$(GOCMD) build -x
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
@@ -13,12 +18,12 @@ export GOARCH=amd64
 all: build test
 
 build:
-	$(GOBUILD) -o $(BINARY_NAME) -ldflags=-w -v
+	$(GOBUILD) -o $(BINARY_NAME)
 
 build-debug:
-	$(GOBUILD) -o $(BINARY_NAME) -v
+	$(GOBUILD_DBG) -o $(BINARY_NAME) -v
 
-build-doc: build
+doc:
 	BUILD_DOC=true ./$(BINARY_NAME)
 
 test: build
@@ -52,7 +57,15 @@ windows-build:
 macos-build:
 	env GOOS=darwin $(GOBUILD) -o $(BINARY_NAME)_osx -v
 
-build-release: tidy build test windows-build macos-build docker-img-build
+gensrc:
+	rm -f $(VERSIONFILE)
+	@echo "package main" > $(VERSIONFILE)
+	@echo "const (" >> $(VERSIONFILE)
+	@echo "  VERSION = \"$(VERSION)\"" >> $(VERSIONFILE)
+	@echo "  BUILD_DATE = \"$(BUILD_DATE)\"" >> $(VERSIONFILE)
+	@echo ")" >> $(VERSIONFILE)
+
+build-release: tidy gensrc build doc test windows-build macos-build docker-img-build
 	zip dodas.zip dodas
 	zip dodas.exe.zip dodas.exe
 	zip dodas_osx.zip dodas_osx
