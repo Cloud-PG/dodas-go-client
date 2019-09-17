@@ -1,0 +1,10 @@
+site_name: DODAS go client
+theme:
+  name: material
+  logo:
+    icon: cloud_circle
+  palette:
+    primary: 'Deep Purple'
+    accent: 'Green'
+repo_name: 'dodas-go-client/dodas-go-client'
+repo_url: 'https://github.com/Cloud-PG/dodas-go-client'
