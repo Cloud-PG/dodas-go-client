@@ -85,6 +85,7 @@ type confCloud struct {
 	AuthVersion   string `yaml:"auth_version"`
 	Domain        string `yaml:"domain"`
 	ServiceRegion string `yaml:"service_region"`
+	AuthUrl       string `yaml:"auth_url"`
 }
 
 type confIM struct {

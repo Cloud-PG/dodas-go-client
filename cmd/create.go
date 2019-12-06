@@ -34,6 +34,7 @@ var decodeFields = map[string]string{
 	"Host":          "host",
 	"Tenant":        "tenant",
 	"AuthVersion":   "auth_version",
+	"AuthUrl":       "auth_url",
 	"Domain":        "domain",
 	"ServiceRegion": "service_region",
 }
