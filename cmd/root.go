@@ -72,6 +72,8 @@ func PrepareAuthHeaders() string {
 
 	authHeader := authHeaderCloud + "\\n" + authHeaderIM
 
+	//fmt.Printf(authHeader)
+
 	return authHeader
 }
 
