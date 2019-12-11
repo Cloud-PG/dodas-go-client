@@ -10,7 +10,7 @@
 Download the binary from the latest release on [github](https://github.com/Cloud-PG/dodas-go-client/releases). For instance:
 
 ```bash
-wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.2.2/dodas.zip
+wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.3.0/dodas.zip
 unzip dodas.zip
 cp dodas /usr/local/bin
 ```
@@ -26,7 +26,7 @@ dodas validate --template tests/tosca/valid_template.yml
 or you can create a cluster through the InfrastructureManager configured in your configuration file:
 
 ```bash
-dodas create --config my_client_conf.yaml my_template.yaml
+dodas create --config my_client_conf.yaml --template my_template.yaml
 ```
 
 To list the Infrastructure ID of all your deployments:
