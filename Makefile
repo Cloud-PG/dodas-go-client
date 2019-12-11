@@ -1,4 +1,4 @@
-VERSION=`git describe --tags`
+VERSION?=`git describe --tags`
 BUILD_DATE := `date +%Y-%m-%d\ %H:%M`
 VERSIONFILE := version.go
 
