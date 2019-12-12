@@ -75,7 +75,7 @@ var outputCmd = &cobra.Command{
 
 		body, _ := ioutil.ReadAll(resp.Body)
 
-		fmt.Print("Deployment status:\n")
+		fmt.Print("Deployment output:\n")
 
 		if resp.StatusCode == 200 {
 			fmt.Println(string(body))
