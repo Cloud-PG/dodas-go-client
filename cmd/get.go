@@ -38,7 +38,7 @@ dodas get -h for possible commands`,
 
 // outputCmd represents the output command
 var outputCmd = &cobra.Command{
-	Use:   "status <infID>",
+	Use:   "output <infID>",
 	Short: "Get deployment output",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
