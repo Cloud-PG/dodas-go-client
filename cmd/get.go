@@ -36,6 +36,57 @@ dodas get -h for possible commands`,
 	},
 }
 
+// outputCmd represents the output command
+var statusCmd = &cobra.Command{
+	Use:   "status <infID>",
+	Short: "Get deployment output",
+	Long:  ``,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("status called")
+
+		client := &http.Client{
+			Timeout: 300 * time.Second,
+		}
+		fmt.Println("Submitting request to  : ", clientConf.Im.Host)
+
+		req, err := http.NewRequest("GET", string(clientConf.Im.Host)+"/"+string(args[0])+"/outputs", nil)
+
+		req.Header.Set("Content-Type", "application/json")
+
+		authHeader := PrepareAuthHeaders()
+
+		req.Header.Set("Authorization", authHeader)
+
+		var request []string
+		for name, headers := range req.Header {
+			name = strings.ToLower(name)
+			for _, h := range headers {
+				request = append(request, fmt.Sprintf("%v: %v", name, h))
+			}
+		}
+
+		request = append(request, fmt.Sprint("\n"))
+		//fmt.Printf(strings.Join(request, "\n"))
+
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
+
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		fmt.Print("Deployment status:\n")
+
+		if resp.StatusCode == 200 {
+			fmt.Println(string(body))
+		} else {
+			fmt.Println("ERROR:\n", string(body))
+			return
+		}
+
+	},
+}
+
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status <infID>",
@@ -208,6 +259,7 @@ var vmCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(getCmd)
 
+	getCmd.AddCommand(outputCmd)
 	getCmd.AddCommand(statusCmd)
 	statusCmd.AddCommand(vmstatusCmd)
 
