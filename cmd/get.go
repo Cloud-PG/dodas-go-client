@@ -37,7 +37,7 @@ dodas get -h for possible commands`,
 }
 
 // outputCmd represents the output command
-var statusCmd = &cobra.Command{
+var outputCmd = &cobra.Command{
 	Use:   "status <infID>",
 	Short: "Get deployment output",
 	Long:  ``,
