@@ -46,8 +46,10 @@ func PrepareAuthHeaders() string {
 		field := fields.Field(i)
 		value := values.Field(i)
 
-		keyTemp := fmt.Sprintf("%v = %v", decodeFields[field.Name], value)
-		authHeaderCloudList = append(authHeaderCloudList, keyTemp)
+		if value.Interface() != "" {
+			keyTemp := fmt.Sprintf("%v = %v", decodeFields[field.Name], value)
+			authHeaderCloudList = append(authHeaderCloudList, keyTemp)
+		}
 	}
 
 	authHeaderCloud := strings.Join(authHeaderCloudList, ";")
