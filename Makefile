@@ -66,7 +66,7 @@ gensrc:
 	@echo "  BUILD_DATE = \"$(BUILD_DATE)\"" >> $(VERSIONFILE)
 	@echo ")" >> $(VERSIONFILE)
 
-build-release: tidy gensrc docker-bin-build doc test windows-build macos-build docker-img-build
+build-release: tidy gensrc build doc test windows-build macos-build docker-img-build
 	zip dodas.zip dodas
 	zip dodas.exe.zip dodas.exe
 	zip dodas_osx.zip dodas_osx
