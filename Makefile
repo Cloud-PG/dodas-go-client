@@ -27,6 +27,9 @@ doc:
 	cp README.md docs/README.md
 	BUILD_DOC=true ./$(BINARY_NAME)
 
+publish-doc:
+	mkdocs gh-deploy
+
 test: build
 	$(GOTEST) -v ./...
 	./$(BINARY_NAME) validate --template tests/tosca/valid_template.yml
@@ -47,7 +50,8 @@ tidy:
 	$(GOCMD) mod tidy
 
 docker-bin-build:
-	docker run --rm -it -v ${PWD}:/go -w /go/ golang:1.12.1 go build -o "$(BINARY_NAME)" -v
+	#docker run --rm -it -v ${PWD}:/go -w /go/ golang:1.12.1 go build -o "$(BINARY_NAME)" -v
+	docker run --rm -it -v '\\wsl$\Ubuntu-18.04\home\dciangot\git\dodas-go-client':/go -w /go/ golang:1.12.1 go build -o "$(BINARY_NAME)" -v
 
 docker-img-build:
 	docker build . -t dodas
@@ -66,7 +70,7 @@ gensrc:
 	@echo "  BUILD_DATE = \"$(BUILD_DATE)\"" >> $(VERSIONFILE)
 	@echo ")" >> $(VERSIONFILE)
 
-build-release: tidy gensrc build doc test windows-build macos-build docker-img-build
+build-release: tidy gensrc build doc publish-doc test windows-build macos-build docker-img-build
 	zip dodas.zip dodas
 	zip dodas.exe.zip dodas.exe
 	zip dodas_osx.zip dodas_osx
