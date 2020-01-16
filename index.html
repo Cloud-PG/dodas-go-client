@@ -305,6 +305,18 @@
 
 
   <li class="md-nav__item">
+    <a href="dodas_completition/" title="Dodas completition" class="md-nav__link">
+      Dodas completition
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="dodas_create/" title="Dodas create" class="md-nav__link">
       Dodas create
     </a>
@@ -467,6 +479,18 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="dodas_zsh-completition/" title="Dodas zsh completition" class="md-nav__link">
+      Dodas zsh completition
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -544,6 +568,14 @@ unzip dodas.zip
 cp dodas /usr/local/bin
 </code></pre>
 
+<blockquote>
+<p><strong>CLI autocomplete</strong></p>
+<p>Autocompletion for bash and zsh is supported</p>
+<ul>
+<li><strong>bash</strong> add the following line to ~/.bashrc: <code>. &lt;(dodas completition)</code></li>
+<li><strong>zsh</strong> add the following line to ~/.zshrc: <code>source &lt;(dodas zsh-completition)</code></li>
+</ul>
+</blockquote>
 <p>You can find now a template for creating your client configuration file in <a href="https://raw.githubusercontent.com/Cloud-PG/dodas-go-client/master/config/client_config.yaml">config/client_config.yaml</a>. Note that by default the client will look for <code>$HOME/.dodas.yaml</code>.</p>
 <p>Now you are ready to go. For instance you can validate a tosca template like this:</p>
 <pre><code class="bash">dodas validate --template tests/tosca/valid_template.yml
