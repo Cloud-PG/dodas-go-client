@@ -30,6 +30,8 @@ Now you are ready to go. For instance you can validate a tosca template like thi
 dodas validate --template tests/tosca/valid_template.yml
 ```
 
+> **Tip:** you can find supported tosca templates for applications and k8s deployments on the [DODAS template repo](https://github.com/DODAS-TS/dodas-templates)
+
 or you can create a cluster through the InfrastructureManager configured in your configuration file:
 
 ```bash
