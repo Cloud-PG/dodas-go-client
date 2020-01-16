@@ -32,8 +32,6 @@ import (
 // getKey extract key from returned string
 func getKey(asciiBody string) (string, error) {
 
-	// TODO: insert errors if len < 2
-
 	stringList := strings.Split(asciiBody, "-----END RSA PRIVATE KEY-----")[0]
 
 	if len(stringList) < 2 {
@@ -50,7 +48,6 @@ func getKey(asciiBody string) (string, error) {
 // getPubIP from extracted string
 func getPubIP(asciiBody string) (string, error) {
 
-	// TODO: insert errors is len is < 2
 	stringList := strings.Split(asciiBody, "net_interface.1.ip = '")
 
 	if len(stringList) < 2 {
