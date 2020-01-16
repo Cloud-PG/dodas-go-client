@@ -79,7 +79,6 @@ var listCmd = &cobra.Command{
 // infIDsCmd represents the infIDs command
 var infIDsCmd = &cobra.Command{
 	Use:   "infIDs",
-	Args:  cobra.MinimumNArgs(1),
 	Short: "List Infrastructure IDs owned by the current client",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
