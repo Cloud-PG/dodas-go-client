@@ -473,6 +473,30 @@
 
 
   <li class="md-nav__item">
+    <a href="dodas_reboot/" title="Dodas reboot" class="md-nav__link">
+      Dodas reboot
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="dodas_reconfig/" title="Dodas reconfig" class="md-nav__link">
+      Dodas reconfig
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="dodas_validate/" title="Dodas validate" class="md-nav__link">
       Dodas validate
     </a>
@@ -605,6 +629,9 @@ cp dodas /usr/local/bin
 <pre><code class="bash">dodas validate --template tests/tosca/valid_template.yml
 </code></pre>
 
+<blockquote>
+<p><strong>Tip:</strong> you can find supported tosca templates for applications and k8s deployments on the <a href="https://github.com/DODAS-TS/dodas-templates">DODAS template repo</a></p>
+</blockquote>
 <p>or you can create a cluster through the InfrastructureManager configured in your configuration file:</p>
 <pre><code class="bash">dodas create --config my_client_conf.yaml my_template.yaml
 </code></pre>
