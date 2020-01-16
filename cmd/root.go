@@ -210,7 +210,7 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		//fmt.Println("Using config file:", viper.ConfigFileUsed())
 		clientConf.getConf(viper.ConfigFileUsed())
 		//if clientConf.im.Password == "" {
 		//	fmt.Println("No password")

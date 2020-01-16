@@ -50,8 +50,7 @@ tidy:
 	$(GOCMD) mod tidy
 
 docker-bin-build:
-	#docker run --rm -it -v ${PWD}:/go -w /go/ golang:1.12.1 go build -o "$(BINARY_NAME)" -v
-	docker run --rm -it -v '\\wsl$\Ubuntu-18.04\home\dciangot\git\dodas-go-client':/go -w /go/ golang:1.12.1 go build -o "$(BINARY_NAME)" -v
+	docker run --rm -it -v ${PWD}:/go -w /go/ golang:1.12.1 go build -o "$(BINARY_NAME)" -v
 
 docker-img-build:
 	docker build . -t dodas

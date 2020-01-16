@@ -16,25 +16,57 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 	"time"
+	"golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/spf13/cobra"
 )
 
-// loginCmd represets the login command
+// getKey extract key from returned string
+func getKey(asciiBody string) (string, error) {
 
+	stringList := strings.Split(asciiBody, "-----END RSA PRIVATE KEY-----")[0]
+
+	if len(stringList) < 2 {
+		return "", fmt.Errorf("Cannot find private key for this machine")
+	}
+
+	vmkeyTmp := strings.Split(stringList, "-----BEGIN RSA PRIVATE KEY-----")[1]
+
+	vmkey := "-----BEGIN RSA PRIVATE KEY-----" + vmkeyTmp + "-----END RSA PRIVATE KEY-----"
+
+	return vmkey, nil
+}
+
+// getPubIP from extracted string
+func getPubIP(asciiBody string) (string, error) {
+
+	stringList := strings.Split(asciiBody, "net_interface.1.ip = '")
+
+	if len(stringList) < 2 {
+		return "", fmt.Errorf("Cannot find a public IP for this machine")
+	}
+
+	partialString := stringList[1]
+
+	pubIPTmp := strings.Split(partialString, "' and")[0]
+
+	return pubIPTmp, nil
+}
+
+
+// loginCmd represets the login command
 var loginCmd = &cobra.Command{
 	Use:   "login <infID> <vmID>",
 	Args:  cobra.MinimumNArgs(2),
-	Short: "WIP feature: ssh login into a deployed vm",
+	Short: "ssh login into a deployed vm",
 	Long:  ``,
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -83,121 +115,94 @@ var loginCmd = &cobra.Command{
 		body, _ := ioutil.ReadAll(resp.Body)
 		fmt.Println(string(body))
 
-		strBody := string(body)
+		asciiBody := string(body)
 
-		asciiBody := strBody
-		//strconv.QuoteToASCII(strBody)
-
-		fmt.Printf(asciiBody)
-		fmt.Printf("\n\n")
-
-		stringList := strings.Split(asciiBody, "-----END RSA PRIVATE KEY-----")[0]
-
-		fmt.Printf(stringList)
-		fmt.Printf("\n\n")
-
-		vmkeyTmp := strings.Split(stringList, "-----BEGIN RSA PRIVATE KEY-----")[1]
-
-		fmt.Printf(vmkeyTmp)
-		fmt.Printf("\n\n")
-
-		vmkey := "-----BEGIN RSA PRIVATE KEY-----" + vmkeyTmp + "-----END RSA PRIVATE KEY-----"
-		fmt.Printf(vmkey)
-
-		ioutil.WriteFile("/tmp/dat2", []byte(vmkey), 0600)
-
-		// exec.Command("openssl", "rsa", "-in", "/tmp/dat2", "-outform", "PEM", "-out", "/tmp/dat3")
-		// if err != nil {
-		// 	panic(err)
-		// }
-
-		cd := exec.Command("ssh", "-i", "/tmp/dat2", "-lcloudadm", "193.204.89.72", "-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no", "bash")
-
-		grepIn, _ := cd.StdinPipe()
-		grepOut, _ := cd.StdoutPipe()
-		grepErr, _ := cd.StderrPipe()
-		err = cd.Start()
+		vmkey, err := getKey(asciiBody)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 
-		go io.Copy(os.Stdout, grepOut)
-		go io.Copy(os.Stderr, grepErr)
-		go io.Copy(grepIn, os.Stdin)
+		pubIP, err := getPubIP(asciiBody)
+		if err != nil {
+			panic(err)
+		}
 
-		log.Printf("Waiting for command to finish...")
-		err = cd.Wait()
-		log.Printf("Command finished with error: %v", err)
+		ioutil.WriteFile("/tmp/data", []byte(vmkey), 0600)
 
-		return
+		rs, err := ioutil.ReadFile("/tmp/data")
+		if err != nil {
+			return
+		}
 
-		// rs, err := ioutil.ReadFile("/tmp/dat3")
-		// if err != nil {
-		// 	return
-		// }
-
-		// LOGIN
-
-		//pem.Encode(block)
 		// Create the Signer for this private key.
-		// signer, err := ssh.ParsePrivateKey(rs) //buffer)
-		// if err != nil {
-		// 	log.Fatalf("unable to parse private key: %v", err)
-		// }
+		signer, err := ssh.ParsePrivateKey(rs) //buffer)
+		if err != nil {
+			log.Fatalf("unable to parse private key: %v", err)
+		}
 
-		// config := &ssh.ClientConfig{
-		// 	User:            "cloudadm",
-		// 	HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		// 	Auth: []ssh.AuthMethod{
-		// 		// Use the PublicKeys method for remote authentication.
-		// 		ssh.PublicKeys(signer),
-		// 	},
-		// }
+		config := &ssh.ClientConfig{
+			User:            "cloudadm",
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			Auth: []ssh.AuthMethod{
+		 		// Use the PublicKeys method for remote authentication.
+				ssh.PublicKeys(signer),
+			},
+		}
 
-		// client, err := ssh.Dial("tcp", "193.204.89.72:22", config)
-		// if err != nil {
-		// 	log.Fatal("Failed to dial: ", err)
-		// }
+		client, err := ssh.Dial("tcp", pubIP+":22", config)
+		if err != nil {
+			log.Fatal("Failed to dial: ", err)
+		}
 
-		// session, err := client.NewSession()
-		// if err != nil {
-		// 	log.Fatal("Failed to create session: ", err)
-		// }
-		// defer session.Close()
+		session, err := client.NewSession()
+		if err != nil {
+			log.Fatal("Failed to create session: ", err)
+		}
+		defer session.Close()
 
-		// modes := ssh.TerminalModes{
-		// 	ssh.ECHO:          0,     // disable echoing
-		// 	ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
-		// 	ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
-		// }
-
-		// if err := session.RequestPty("vt220", 80, 40, modes); err != nil {
-		// 	session.Close()
-		// 	fmt.Printf("request for pseudo terminal failed: %s", err)
-		// }
-
-		// stdin, err := session.StdinPipe()
-		// if err != nil {
-		// 	fmt.Printf("Unable to setup stdin for session: %v", err)
-		// }
-		// go io.Copy(stdin, os.Stdin)
-
-		// stdout, err := session.StdoutPipe()
-		// if err != nil {
-		// 	fmt.Printf("Unable to setup stdout for session: %v", err)
-		// }
-		// go io.Copy(os.Stdout, stdout)
-
-		// stderr, err := session.StderrPipe()
-		// if err != nil {
-		// 	fmt.Printf("Unable to setup stderr for session: %v", err)
-		// }
-		// go io.Copy(os.Stderr, stderr)
-
-		// err = session.Run("bash")
-		// if err != nil {
-		// 	panic(err)
-		// }
+		fd := int(os.Stdin.Fd())
+		state, err := terminal.MakeRaw(fd)
+		if err != nil {
+			fmt.Printf("terminal make raw: %s", err)
+		}
+		defer terminal.Restore(fd, state)
+	
+		w, h, err := terminal.GetSize(fd)
+		if err != nil {
+			fmt.Printf("terminal get size: %s", err)
+		}
+	
+		modes := ssh.TerminalModes{
+			ssh.ECHO:          1,
+			ssh.TTY_OP_ISPEED: 14400,
+			ssh.TTY_OP_OSPEED: 14400,
+		}
+	
+		term := os.Getenv("TERM")
+		if term == "" {
+			term = "xterm-256color"
+		}
+		if err := session.RequestPty(term, h, w, modes); err != nil {
+			fmt.Printf("session xterm: %s", err)
+		}
+	
+		session.Stdout = os.Stdout
+		session.Stderr = os.Stderr
+		session.Stdin = os.Stdin
+	
+		if err := session.Shell(); err != nil {
+			fmt.Printf("session shell: %s", err)
+		}
+	
+		if err := session.Wait(); err != nil {
+			if e, ok := err.(*ssh.ExitError); ok {
+				switch e.ExitStatus() {
+				case 130:
+					fmt.Printf("ssh: %s", err)
+				}
+			}
+			fmt.Printf("ssh: %s", err)
+		}
 
 	},
 }

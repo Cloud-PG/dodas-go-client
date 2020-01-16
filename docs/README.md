@@ -10,10 +10,17 @@
 Download the binary from the latest release on [github](https://github.com/Cloud-PG/dodas-go-client/releases). For instance:
 
 ```bash
-wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.3.1/dodas.zip
+wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.3.2/dodas.zip
 unzip dodas.zip
 cp dodas /usr/local/bin
 ```
+
+> **CLI autocomplete**
+>
+> Autocompletion for bash and zsh is supported
+>
+> - **bash** add the following line to ~/.bashrc: `. <(dodas completition)`
+> - **zsh** add the following line to ~/.zshrc: `source <(dodas zsh-completition)`
 
 You can find now a template for creating your client configuration file in [config/client_config.yaml](https://raw.githubusercontent.com/Cloud-PG/dodas-go-client/master/config/client_config.yaml). Note that by default the client will look for `$HOME/.dodas.yaml`.
 
