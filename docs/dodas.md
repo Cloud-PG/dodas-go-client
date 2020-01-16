@@ -36,6 +36,8 @@ dodas [flags]
 * [dodas get](dodas_get.md)	 - Wrapper command for get operations
 * [dodas list](dodas_list.md)	 - Wrapper function for list operations
 * [dodas login](dodas_login.md)	 - ssh login into a deployed vm
+* [dodas reboot](dodas_reboot.md)	 - reboot a vm in the cluster
+* [dodas reconfig](dodas_reconfig.md)	 - restart cluster configuration
 * [dodas validate](dodas_validate.md)	 - Validate your tosca template
 * [dodas version](dodas_version.md)	 - Client version
 * [dodas zsh-autocomplete](dodas_zsh-autocomplete.md)	 - Generate script for zsh autocomplete

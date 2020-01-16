@@ -142,11 +142,6 @@ dodas validate --template my_tosca_template.yml
 """`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if version {
-			fmt.Println("dodas client version:", VersionString)
-		} else {
-			fmt.Println("Use 'dodas [command] --help' for more information about a command.")
-		}
 	},
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

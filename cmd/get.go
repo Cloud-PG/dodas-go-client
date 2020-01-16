@@ -28,17 +28,18 @@ import (
 // getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:   "get",
+	Args:  cobra.MinimumNArgs(1),
 	Short: "Wrapper command for get operations",
 	Long: `Wrapper command for get operations.
 dodas get -h for possible commands`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("'dodas get -h' for possible commands")
 	},
 }
 
 // outputCmd represents the output command
 var outputCmd = &cobra.Command{
 	Use:   "output <infID>",
+	Args:  cobra.MinimumNArgs(1),
 	Short: "Get deployment output",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -90,6 +91,7 @@ var outputCmd = &cobra.Command{
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status <infID>",
+	Args:  cobra.MinimumNArgs(1),
 	Short: "Get deployment status",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
