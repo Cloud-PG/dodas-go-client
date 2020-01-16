@@ -1,4 +1,5 @@
 VERSION?=`git describe --tags`
+DOCBIN?=mkdocs
 BUILD_DATE := `date +%Y-%m-%d\ %H:%M`
 VERSIONFILE := version.go
 
@@ -28,7 +29,7 @@ doc:
 	BUILD_DOC=true ./$(BINARY_NAME)
 
 publish-doc:
-	mkdocs gh-deploy
+	$(DOCBIN) gh-deploy
 
 test: build
 	$(GOTEST) -v ./...
@@ -69,7 +70,7 @@ gensrc:
 	@echo "  BUILD_DATE = \"$(BUILD_DATE)\"" >> $(VERSIONFILE)
 	@echo ")" >> $(VERSIONFILE)
 
-build-release: tidy gensrc build doc publish-doc test windows-build macos-build docker-img-build
+build-release: tidy gensrc build doc publish-doc test windows-build macos-build
 	zip dodas.zip dodas
 	zip dodas.exe.zip dodas.exe
 	zip dodas_osx.zip dodas_osx
