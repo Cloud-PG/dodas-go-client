@@ -21,35 +21,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// completitionCmd represents the completition command
-var completitionCmd = &cobra.Command{
-	Use:   "completition",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+// autocompleteCmd represents the completion command
+var autocompleteCmd = &cobra.Command{
+	Use:   "autocomplete",
+	Short: "Generate script for bash autocomplete",
+	Long: `add the following line to ~/.bashrc: . <(dodas autocomplete)`,
 	Run: func(cmd *cobra.Command, args []string) {
 		rootCmd.GenBashCompletion(os.Stdout);
 		//rootCmd.GenZshCompletion(os.Stdout);
 	},
 }
 
-// completitionZshCmd represents the completition command
-var completitionZshCmd = &cobra.Command{
-	Use:   "zsh-completition",
-	Short: "A brief description of your command",
-	Long: ``,
+// autocompleteZshCmd represents the completion command
+var autocompleteZshCmd = &cobra.Command{
+	Use:   "zsh-autocomplete",
+	Short: "Generate script for zsh autocomplete",
+	Long: `add the following line to ~/.bashrc: source <(dodas zsh-autocomplete)`,
 	Run: func(cmd *cobra.Command, args []string) {
 		rootCmd.GenZshCompletion(os.Stdout);
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(completitionCmd)
-	rootCmd.AddCommand(completitionZshCmd)
+	rootCmd.AddCommand(autocompleteCmd)
+	rootCmd.AddCommand(autocompleteZshCmd)
 
 	// Here you will define your flags and configuration settings.
 

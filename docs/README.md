@@ -10,7 +10,7 @@
 Download the binary from the latest release on [github](https://github.com/Cloud-PG/dodas-go-client/releases). For instance:
 
 ```bash
-wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.3.2/dodas.zip
+wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.3.2-patch1/dodas.zip
 unzip dodas.zip
 cp dodas /usr/local/bin
 ```
@@ -19,8 +19,8 @@ cp dodas /usr/local/bin
 >
 > Autocompletion for bash and zsh is supported
 >
-> - **bash** add the following line to ~/.bashrc: `. <(dodas completition)`
-> - **zsh** add the following line to ~/.zshrc: `source <(dodas zsh-completition)`
+> - **bash** add the following line to ~/.bashrc: `. <(dodas autocomplete)`
+> - **zsh** add the following line to ~/.zshrc: `source <(dodas zsh-autocomplete)`
 
 You can find now a template for creating your client configuration file in [config/client_config.yaml](https://raw.githubusercontent.com/Cloud-PG/dodas-go-client/master/config/client_config.yaml). Note that by default the client will look for `$HOME/.dodas.yaml`.
 
@@ -40,6 +40,13 @@ To list the Infrastructure ID of all your deployments:
 
 ```bash
 dodas list infIDs
+```
+
+You can eventually login into a vm in created cluster that has a public IP address with:
+
+```bash
+dodas login <infID> <vmID>
+# e.g. dodas login cb585e5c-33b6-11ea-8776-0242ac150003 0
 ```
 
 ## Using docker image
