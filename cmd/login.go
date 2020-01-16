@@ -36,6 +36,10 @@ func getKey(asciiBody string) (string, error) {
 
 	stringList := strings.Split(asciiBody, "-----END RSA PRIVATE KEY-----")[0]
 
+	if len(stringList) < 2 {
+		return "", fmt.Errorf("Cannot find private key for this machine")
+	}
+
 	vmkeyTmp := strings.Split(stringList, "-----BEGIN RSA PRIVATE KEY-----")[1]
 
 	vmkey := "-----BEGIN RSA PRIVATE KEY-----" + vmkeyTmp + "-----END RSA PRIVATE KEY-----"
@@ -47,10 +51,15 @@ func getKey(asciiBody string) (string, error) {
 func getPubIP(asciiBody string) (string, error) {
 
 	// TODO: insert errors is len is < 2
+	stringList := strings.Split(asciiBody, "net_interface.1.ip = '")
 
-	stringList := strings.Split(asciiBody, "net_interface.1.ip = '")[1]
+	if len(stringList) < 2 {
+		return "", fmt.Errorf("Cannot find a public IP for this machine")
+	}
 
-	pubIPTmp := strings.Split(stringList, "' and")[0]
+	partialString := stringList[1]
+
+	pubIPTmp := strings.Split(partialString, "' and")[0]
 
 	return pubIPTmp, nil
 }
@@ -112,7 +121,14 @@ var loginCmd = &cobra.Command{
 		asciiBody := string(body)
 
 		vmkey, err := getKey(asciiBody)
+		if err != nil {
+			panic(err)
+		}
+
 		pubIP, err := getPubIP(asciiBody)
+		if err != nil {
+			panic(err)
+		}
 
 		ioutil.WriteFile("/tmp/data", []byte(vmkey), 0600)
 
