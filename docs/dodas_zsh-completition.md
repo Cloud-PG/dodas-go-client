@@ -1,19 +1,19 @@
-## dodas version
+## dodas zsh-completition
 
-Client version
+A brief description of your command
 
 ### Synopsis
 
-Client version
+A brief description of your command
 
 ```
-dodas version [flags]
+dodas zsh-completition [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help   help for version
+  -h, --help   help for zsh-completition
 ```
 
 ### Options inherited from parent commands
