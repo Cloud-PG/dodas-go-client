@@ -1,18 +1,18 @@
 
-# DODAS client (PROJECT moved to https://github.com/dodas-ts/dodas-go-client)
+# DODAS client (project moved to https://github.com/dodas-ts/dodas-go-client)
 
 > **N.B.** This project has been moved to https://github.com/dodas-ts/dodas-go-client
 
-[![Build Status](https://travis-ci.org/Cloud-PG/dodas-go-client.svg?branch=master)](https://travis-ci.org/Cloud-PG/dodas-go-client)
+[![Build Status](https://travis-ci.org/dodas-ts/dodas-go-client.svg?branch=master)](https://travis-ci.org/dodas-ts/dodas-go-client)
 
-[Reference Manual](https://cloud-pg.github.io/dodas-go-client/dodas)
+[Reference Manual](https://dodas-ts.github.io/dodas-go-client/dodas)
 
 ## Quick start
 
 Download the binary from the latest release on [github](https://github.com/Cloud-PG/dodas-go-client/releases). For instance:
 
 ```bash
-wget https://github.com/Cloud-PG/dodas-go-client/releases/download/v0.3.3/dodas.zip
+wget https://github.com/dodas-ts/dodas-go-client/releases/download/v0.3.3/dodas.zip
 unzip dodas.zip
 cp dodas /usr/local/bin
 ```
