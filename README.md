@@ -1,5 +1,5 @@
 
-# DODAS client
+# DODAS client (PROJECT moved to https://github.com/dodas-ts/dodas-go-client)
 
 > **N.B.** This project has been moved to https://github.com/dodas-ts/dodas-go-client
 
